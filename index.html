@@ -425,6 +425,8 @@ body {
 .f-check { font-family: var(--font-hei); font-size: 13px; color: var(--ink); }
 .modal-actions { display: flex; justify-content: flex-end; padding-top: 6px; border-top: 1px dashed var(--line); }
 
+.meta-edit-row { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); text-align: right; }
+
 /* 编辑模式提示条 */
 body.editing .app::before {
   content: "—— 修订模式已开启 · 修改仅保存在本浏览器，记得导出 data.js ——";
@@ -780,7 +782,7 @@ window.ARCHIVE_DATA = {
 
     var html = '';
     html += '<section class="intro paper">';
-    html += '<div class="intro-head"><span class="file-no">卷宗编号 · A-114</span>' + stampHTML(meta.stamp) + '</div>';
+    html += '<div class="intro-head"><span class="file-no">' + esc(meta.fileNo || "卷宗编号 · A-114") + '</span>' + stampHTML(meta.stamp) + '</div>';
     html += '<h1 class="intro-title">' + esc(meta.title) + '</h1>';
     html += '<p class="intro-text">' + renderInline(meta.intro || "") + '</p>';
     html += '<div class="filter-bar">';
@@ -793,7 +795,11 @@ window.ARCHIVE_DATA = {
     data.characters.forEach(function (c) {
       html += '<button class="filter-chip' + (filterChar === c.id ? " on" : "") + '" data-char="' + esc(c.id) + '">' + esc(c.name) + '</button>';
     });
-    html += '</div></div></section>';
+    html += '</div></div>';
+    if (isEdit()) {
+      html += '<div class="meta-edit-row"><button class="mini-btn" data-edit-meta>✎ 修订档案抬头（标题 / 引言 / 印章 / 页脚）</button></div>';
+    }
+    html += '</section>';
 
     html += '<section class="timeline">';
     if (!filtered.length) {
@@ -859,6 +865,8 @@ window.ARCHIVE_DATA = {
     });
     var add = app.querySelector("[data-add-event]");
     if (add) add.addEventListener("click", function () { showEventForm(null); });
+    var em = app.querySelector("[data-edit-meta]");
+    if (em) em.addEventListener("click", function () { showMetaForm(); });
   }
 
   function restoreFocus(id) {
@@ -1116,6 +1124,28 @@ window.ARCHIVE_DATA = {
     });
   }
 
+  /* ---------- 编辑：档案抬头（站点信息） ---------- */
+  function showMetaForm() {
+    var m = data.meta;
+    var body = '<div class="f-grid">'
+      + field("档案室标题（页头与首页大字）", "title", m.title)
+      + field("英文副标题", "subtitle", m.subtitle)
+      + field("卷宗编号", "fileNo", m.fileNo || "卷宗编号 · A-114")
+      + field("印章文字", "stamp", m.stamp)
+      + '</div>'
+      + field("首页引言（描述文字）", "intro", m.intro, "textarea")
+      + field("页脚文字", "footer", m.footer);
+    modal("修订档案抬头", body, function (form) {
+      var fd = new FormData(form);
+      data.meta.title = String(fd.get("title"));
+      data.meta.subtitle = String(fd.get("subtitle"));
+      data.meta.fileNo = String(fd.get("fileNo"));
+      data.meta.stamp = String(fd.get("stamp"));
+      data.meta.intro = String(fd.get("intro"));
+      data.meta.footer = String(fd.get("footer"));
+    });
+  }
+
   /* ---------- 导入 / 导出 / 重置 ---------- */
   document.getElementById("btn-export").addEventListener("click", function () {
     var text = "/* 由档案室编辑模式导出 —— 直接替换 js/data.js 后提交 GitHub 即可永久生效 */\n"
@@ -1166,7 +1196,16 @@ window.ARCHIVE_DATA = {
   });
 
   /* ---------- 路由 ---------- */
+  function applyMeta() {
+    var m = data.meta;
+    document.getElementById("brand-title").textContent = m.title || "事件档案室";
+    document.getElementById("brand-subtitle").textContent = m.subtitle || "CHRONICLE ARCHIVE";
+    document.getElementById("footer-note").textContent = m.footer || "";
+    document.title = (m.title || "事件档案室") + " · CHRONICLE ARCHIVE";
+  }
+
   function route() {
+    applyMeta();
     var hash = location.hash || "#/";
     document.querySelectorAll(".main-nav a").forEach(function (a) {
       a.classList.remove("active");
@@ -1193,11 +1232,6 @@ window.ARCHIVE_DATA = {
   }
 
   /* ---------- 启动 ---------- */
-  document.getElementById("brand-title").textContent = data.meta.title || "事件档案室";
-  document.getElementById("brand-subtitle").textContent = data.meta.subtitle || "CHRONICLE ARCHIVE";
-  document.getElementById("footer-note").textContent = data.meta.footer || "";
-  document.title = (data.meta.title || "事件档案室") + " · CHRONICLE ARCHIVE";
-
   document.getElementById("edit-toggle").addEventListener("click", function () {
     setEdit(!isEdit());
     route();
