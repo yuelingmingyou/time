@@ -247,7 +247,7 @@ body {
 
 /* ---------- 人名 / 事件 链接碎片 ---------- */
 .chip {
-  font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
+font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
   padding: 0 6px 1px; border-bottom: 1.5px solid; white-space: nowrap;
   transition: background 0.2s ease;
 }
@@ -379,8 +379,7 @@ body {
 .mini-btn:hover { background: #fff; }
 .mini-btn.danger { color: var(--red-deep); border-color: var(--red-deep); }
 .mini-btn.add { background: var(--ink); color: var(--paper-hi); border-color: var(--ink); }
-
-.add-row { text-align: center; margin-top: 20px; }
+  .add-row { text-align: center; margin-top: 20px; }
 .add-row .mini-btn { padding: 10px 26px; font-size: 13px; letter-spacing: 3px; border-style: dashed; }
 
 .edit-toolbar[hidden] { display: none; }
@@ -732,7 +731,7 @@ window.ARCHIVE_DATA = {
       return '<span class="redact" title="悬停查看">' + esc(secret) + "</span>";
     });
     return out;
-  }
+    }
 
   function renderArticle(text) {
     if (!text) return "";
@@ -838,7 +837,6 @@ window.ARCHIVE_DATA = {
     app.innerHTML = html;
     bindTimeline();
   }
-
   function bindTimeline() {
     var s = document.getElementById("search");
     if (s) s.addEventListener("input", function () { searchQ = s.value; renderTimeline(); restoreFocus("search"); });
@@ -941,7 +939,6 @@ window.ARCHIVE_DATA = {
     html += '<h1 class="dossier-title">' + esc(e.title) + '</h1>';
     html += '<div class="dossier-date">记录日期：' + esc(e.date) + '</div>';
     html += '</header>';
-
     html += '<dl class="meta-table">';
     html += '<dt>事件摘要</dt><dd>' + renderInline(e.summary) + '</dd>';
     if ((e.tags || []).length) html += '<dt>归档标签</dt><dd>' + e.tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join(" ") + '</dd>';
@@ -1097,7 +1094,7 @@ window.ARCHIVE_DATA = {
 
     var body = '<div class="f-grid">'
       + field("人物 ID（英文，唯一）", "id", c.id)
-      + field("姓名", "name", c.name)
+          + field("姓名", "name", c.name)
       + field("称号 / 代号", "alias", c.alias)
       + '<label class="f-label">保密等级<select name="level">' + levels + '</select></label>'
       + '</div>'
@@ -1210,7 +1207,6 @@ window.ARCHIVE_DATA = {
     document.querySelectorAll(".main-nav a").forEach(function (a) {
       a.classList.remove("active");
     });
-
     var m;
     if ((m = hash.match(/^#\/event\/(.+)$/))) {
       renderEvent(decodeURIComponent(m[1]));
