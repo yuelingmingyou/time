@@ -247,7 +247,7 @@ body {
 
 /* ---------- 人名 / 事件 链接碎片 ---------- */
 .chip {
-font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
+  font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
   padding: 0 6px 1px; border-bottom: 1.5px solid; white-space: nowrap;
   transition: background 0.2s ease;
 }
@@ -334,6 +334,9 @@ font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
   display: flex; align-items: baseline; gap: 12px; padding: 7px 0;
   border-bottom: 1px dotted var(--line); font-size: 14px;
 }
+.rel-list .rel-name { flex: none; min-width: 132px; }
+.rel-plain { font-weight: 700; letter-spacing: 1px; }
+.rel-note { color: var(--ink-soft); font-size: 14px; line-height: 1.8; }
 
 .dossier-sign {
   margin-top: 34px; text-align: center;
@@ -379,7 +382,8 @@ font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
 .mini-btn:hover { background: #fff; }
 .mini-btn.danger { color: var(--red-deep); border-color: var(--red-deep); }
 .mini-btn.add { background: var(--ink); color: var(--paper-hi); border-color: var(--ink); }
-  .add-row { text-align: center; margin-top: 20px; }
+
+.add-row { text-align: center; margin-top: 20px; }
 .add-row .mini-btn { padding: 10px 26px; font-size: 13px; letter-spacing: 3px; border-style: dashed; }
 
 .edit-toolbar[hidden] { display: none; }
@@ -557,6 +561,11 @@ window.ARCHIVE_DATA = {
       name: "莉安 · 维尔特",
       alias: "「黑猫的端水人」",
       level: "机密",
+      relations: [
+        { id: "cedric", name: "塞德里克 · 奥伯龙", rel: "温室事件里替她揽下全部处分的人" },
+        { id: "edgar", name: "埃德加 · 灰羽", rel: "唯一在「看穿她」和「放过她」之间摇摆的大人" },
+        { id: "vivian", name: "薇薇安 · 罗严塔尔", rel: "禁书区里隔着一排书架对视过的人" }
+      ],
       fields: [
         { k: "身份", v: "苍曜学院一年级 · 星象科" },
         { k: "外貌", v: "黑色短发，湖蓝色眼睛，身形娇小" },
@@ -571,6 +580,9 @@ window.ARCHIVE_DATA = {
       name: "塞德里克 · 奥伯龙",
       alias: "「白银的学生会长」",
       level: "内部",
+      relations: [
+        { id: "lian", name: "莉安 · 维尔特", rel: "他第一次违背「正确」的理由" }
+      ],
       fields: [
         { k: "身份", v: "苍曜学院三年级 · 学生会会长" },
         { k: "家世", v: "奥伯龙侯爵家嫡子" },
@@ -583,6 +595,9 @@ window.ARCHIVE_DATA = {
       name: "薇薇安 · 罗严塔尔",
       alias: "「禁书区的守夜人」",
       level: "内部",
+      relations: [
+        { id: "lian", name: "莉安 · 维尔特", rel: "留下红茶与字条的人" }
+      ],
       fields: [
         { k: "身份", v: "苍曜学院二年级 · 图书委员长" },
         { k: "擅长", v: "古代语解读、结界魔术" },
@@ -595,6 +610,9 @@ window.ARCHIVE_DATA = {
       name: "埃德加 · 灰羽",
       alias: "「不提问的教授」",
       level: "公开",
+      relations: [
+        { id: "lian", name: "莉安 · 维尔特", rel: "抽屉里那份未提交报告的对象" }
+      ],
       fields: [
         { k: "身份", v: "星象科教授 · 莉安的指导教员" },
         { k: "特征", v: "灰色长外套，口袋里永远有糖" },
@@ -731,7 +749,7 @@ window.ARCHIVE_DATA = {
       return '<span class="redact" title="悬停查看">' + esc(secret) + "</span>";
     });
     return out;
-    }
+  }
 
   function renderArticle(text) {
     if (!text) return "";
@@ -837,6 +855,7 @@ window.ARCHIVE_DATA = {
     app.innerHTML = html;
     bindTimeline();
   }
+
   function bindTimeline() {
     var s = document.getElementById("search");
     if (s) s.addEventListener("input", function () { searchQ = s.value; renderTimeline(); restoreFocus("search"); });
@@ -939,6 +958,7 @@ window.ARCHIVE_DATA = {
     html += '<h1 class="dossier-title">' + esc(e.title) + '</h1>';
     html += '<div class="dossier-date">记录日期：' + esc(e.date) + '</div>';
     html += '</header>';
+
     html += '<dl class="meta-table">';
     html += '<dt>事件摘要</dt><dd>' + renderInline(e.summary) + '</dd>';
     if ((e.tags || []).length) html += '<dt>归档标签</dt><dd>' + e.tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join(" ") + '</dd>';
@@ -994,6 +1014,19 @@ window.ARCHIVE_DATA = {
     }
 
     html += '<div class="article">' + renderArticle(c.bio) + '</div>';
+
+    if ((c.relations || []).length) {
+      html += '<h3 class="related-title">关联人物</h3><ul class="related-list rel-list">';
+      c.relations.forEach(function (r) {
+        var target = r.id ? findChar(r.id) : null;
+        var nameHtml = target
+          ? '<a class="chip chip-char" href="#/char/' + encodeURIComponent(target.id) + '">' + esc(r.name || target.name) + '</a>'
+          : '<span class="rel-plain">' + esc(r.name || "（未署名）") + '</span>';
+        html += '<li><span class="rel-name">' + nameHtml + '</span>'
+          + '<span class="rel-note">' + renderInline(r.rel || "") + '</span></li>';
+      });
+      html += '</ul>';
+    }
 
     if (related.length) {
       html += '<h3 class="related-title">相关卷宗</h3><ul class="related-list">';
@@ -1091,14 +1124,16 @@ window.ARCHIVE_DATA = {
     }).join("");
 
     var fieldsText = (c.fields || []).map(function (f) { return f.k + "：" + f.v; }).join("\n");
+    var relsText = (c.relations || []).map(function (r) { return (r.name || "") + "：" + (r.rel || ""); }).join("\n");
 
     var body = '<div class="f-grid">'
       + field("人物 ID（英文，唯一）", "id", c.id)
-          + field("姓名", "name", c.name)
+      + field("姓名", "name", c.name)
       + field("称号 / 代号", "alias", c.alias)
       + '<label class="f-label">保密等级<select name="level">' + levels + '</select></label>'
       + '</div>'
       + field("档案表格（每行一条，格式：项目：内容）", "fields", fieldsText, "textarea")
+      + field("关联人物（每行一条，格式：人物名字：关系描述。名字与档案一致时可点击跳转）", "relations", relsText, "textarea")
       + field("人物设定正文（空行分段；支持特殊标记）", "bio", c.bio, "textarea");
 
     modal(isNew ? "新增人物档案" : "修订档案 · " + c.name, body, function (form) {
@@ -1117,6 +1152,16 @@ window.ARCHIVE_DATA = {
         return { k: m[0].trim(), v: m.slice(1).join("：").trim() };
       }).filter(Boolean);
       target.bio = String(fd.get("bio"));
+      target.relations = String(fd.get("relations")).split("\n").map(function (line) {
+        var m = line.split(/[:：]/);
+        if (m.length < 2) return null;
+        var name = m[0].trim();
+        var rel = m.slice(1).join("：").trim();
+        if (!name) return null;
+        var norm = function (s) { return s.replace(/[\s·・]/g, ""); };
+        var found = data.characters.find(function (x) { return norm(x.name) === norm(name); });
+        return { id: found ? found.id : "", name: name, rel: rel };
+      }).filter(Boolean);
       if (isNew) data.characters.push(target);
     });
   }
@@ -1207,6 +1252,7 @@ window.ARCHIVE_DATA = {
     document.querySelectorAll(".main-nav a").forEach(function (a) {
       a.classList.remove("active");
     });
+
     var m;
     if ((m = hash.match(/^#\/event\/(.+)$/))) {
       renderEvent(decodeURIComponent(m[1]));
