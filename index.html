@@ -247,8 +247,273 @@ body {
 
 /* ---------- 人名 / 事件 链接碎片 ---------- */
 .chip {
-  font-
-  /* ============================================================
+  font-family: var(--font-hei); text-decoration: none; font-size: 0.92em;
+  padding: 0 6px 1px; border-bottom: 1.5px solid; white-space: nowrap;
+  transition: background 0.2s ease;
+}
+.chip-char { color: #1f5f8a; border-color: rgba(31, 95, 138, 0.55); background: rgba(31, 95, 138, 0.07); }
+.chip-char:hover { background: #1f5f8a; color: var(--paper-hi); }
+.chip-event { color: var(--red-deep); border-color: rgba(156, 43, 34, 0.5); background: rgba(156, 43, 34, 0.06); }
+.chip-event:hover { background: var(--red-deep); color: var(--paper-hi); }
+
+/* 涂黑条 */
+.redact {
+  background: var(--ink); color: transparent; cursor: help;
+  padding: 0 4px; border-radius: 1px; user-select: none;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.redact:hover { background: rgba(34, 30, 24, 0.15); color: var(--red-deep); user-select: text; }
+
+/* ---------- 详情页 ---------- */
+.back-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; gap: 12px; flex-wrap: wrap; }
+.back-link {
+  font-family: var(--font-hei); font-size: 13px; letter-spacing: 2px;
+  color: #cbb98e; text-decoration: none;
+}
+.back-link:hover { color: var(--paper-hi); }
+
+.dossier { padding: 40px 52px 44px 74px; }
+.dossier::after { display: none; } /* 详情页不用胶带，用打孔 */
+
+.punch-holes { position: absolute; left: 22px; top: 0; bottom: 0; width: 20px; }
+.punch-holes i {
+  position: absolute; left: 0; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--desk); box-shadow: inset 0 2px 3px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.25);
+}
+.punch-holes i:nth-child(1) { top: 15%; }
+.punch-holes i:nth-child(2) { top: 48%; }
+.punch-holes i:nth-child(3) { top: 81%; }
+
+.dossier-head { border-bottom: 2.5px solid var(--ink); padding-bottom: 16px; margin-bottom: 22px; }
+.dossier-meta-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.dossier-title { font-size: 30px; letter-spacing: 3px; font-weight: 700; line-height: 1.5; }
+.dossier-date { font-family: var(--font-mono); font-size: 13px; letter-spacing: 2px; color: var(--ink-faint); margin-top: 6px; }
+
+.char-head { display: flex; gap: 26px; align-items: flex-start; }
+.char-head-main { flex: 1; min-width: 0; }
+
+/* 人物照片框 */
+.portrait {
+  flex: none; width: 108px; height: 132px; transform: rotate(-1.5deg);
+  background: linear-gradient(160deg, #d8c89e, #c8b586);
+  border: 6px solid var(--paper-hi);
+  outline: 1px solid #b3a071;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+}
+.portrait span { font-size: 44px; font-weight: 700; color: var(--ink-soft); font-family: var(--font-serif); }
+.portrait i { font-family: var(--font-mono); font-style: normal; font-size: 8px; letter-spacing: 2px; color: var(--ink-faint); text-align: center; line-height: 1.6; }
+
+/* 档案表格 */
+.meta-table { display: grid; grid-template-columns: 96px 1fr; border: 1.5px solid var(--ink); margin-bottom: 26px; }
+.meta-table dt, .meta-table dd { padding: 9px 14px; font-size: 14px; border-bottom: 1px solid var(--line); }
+.meta-table dt {
+  font-family: var(--font-hei); font-size: 12.5px; letter-spacing: 2px;
+  background: rgba(34, 30, 24, 0.06); border-right: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.meta-table dd { color: var(--ink); }
+.meta-table dt:last-of-type, .meta-table dd:last-of-type { border-bottom: none; }
+
+.tag {
+  display: inline-block; font-family: var(--font-hei); font-size: 12px;
+  border: 1px solid var(--line); padding: 1px 9px; color: var(--ink-soft); margin: 2px 2px;
+}
+
+/* 正文 */
+.article { font-size: 15.5px; line-height: 2.15; }
+.article p { margin-bottom: 1.2em; text-indent: 2em; }
+.article p:last-child { margin-bottom: 0; }
+
+.related-title {
+  margin-top: 30px; padding-top: 16px; border-top: 1px dashed var(--line);
+  font-family: var(--font-hei); font-size: 13px; letter-spacing: 4px; color: var(--ink-soft);
+}
+.related-list { list-style: none; margin-top: 12px; }
+.related-list li {
+  display: flex; align-items: baseline; gap: 12px; padding: 7px 0;
+  border-bottom: 1px dotted var(--line); font-size: 14px;
+}
+.rel-list .rel-name { flex: none; min-width: 132px; }
+.rel-plain { font-weight: 700; letter-spacing: 1px; }
+.rel-note { color: var(--ink-soft); font-size: 14px; line-height: 1.8; }
+
+.dossier-sign {
+  margin-top: 34px; text-align: center;
+  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 3px; color: var(--ink-faint);
+}
+
+.prev-next { display: flex; justify-content: space-between; gap: 16px; margin-top: 30px; flex-wrap: wrap; }
+.prev-next a {
+  font-family: var(--font-hei); font-size: 13px; letter-spacing: 1px;
+  color: #cbb98e; text-decoration: none; border: 1px solid rgba(176, 141, 70, 0.4);
+  padding: 8px 16px; max-width: 46%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.prev-next a:hover { color: var(--paper-hi); border-color: var(--brass); }
+
+/* ---------- 人物索引 ---------- */
+.char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
+
+.dossier-card-wrap { position: relative; }
+.dossier-card {
+  display: flex; gap: 18px; padding: 24px 22px 20px;
+  text-decoration: none; color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.dossier-card:hover { transform: translateY(-4px) rotate(0.4deg); box-shadow: 0 4px 0 rgba(0,0,0,0.35), 0 24px 44px rgba(0, 0, 0, 0.55); }
+.dossier-card .portrait { width: 88px; height: 108px; }
+.dossier-card .portrait span { font-size: 34px; }
+
+.dossier-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.dossier-name { font-size: 19px; font-weight: 700; letter-spacing: 1.5px; }
+.dossier-alias { font-family: var(--font-hei); font-size: 12px; color: var(--red-deep); letter-spacing: 1px; margin: 2px 0 8px; }
+.dossier-field { font-size: 13px; color: var(--ink-soft); }
+.dossier-foot { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+.dossier-foot .stamp { font-size: 10px; letter-spacing: 3px; padding: 2px 8px 2px 10px; }
+.dossier-foot .folder-cta { margin-top: 0; }
+
+/* ---------- 编辑模式 ---------- */
+.mini-btn {
+  font-family: var(--font-hei); font-size: 12px; letter-spacing: 1px; cursor: pointer;
+  background: var(--paper-hi); color: var(--ink); border: 1px solid var(--ink-soft);
+  padding: 4px 12px; box-shadow: 1px 2px 0 rgba(0,0,0,0.35);
+}
+.mini-btn:hover { background: #fff; }
+.mini-btn.danger { color: var(--red-deep); border-color: var(--red-deep); }
+.mini-btn.add { background: var(--ink); color: var(--paper-hi); border-color: var(--ink); }
+
+.add-row { text-align: center; margin-top: 20px; }
+.add-row .mini-btn { padding: 10px 26px; font-size: 13px; letter-spacing: 3px; border-style: dashed; }
+
+.edit-toolbar[hidden] { display: none; }
+
+.edit-toolbar {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  z-index: 60; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: #241f16; border: 1px solid var(--brass);
+  padding: 10px 16px; box-shadow: 0 14px 34px rgba(0,0,0,0.6);
+}
+.toolbar-label { font-family: var(--font-hei); font-size: 11px; letter-spacing: 3px; color: var(--brass); }
+.edit-toolbar button {
+  font-family: var(--font-hei); font-size: 12px; cursor: pointer;
+  background: transparent; color: #cbb98e; border: 1px solid rgba(176, 141, 70, 0.5);
+  padding: 5px 12px;
+}
+.edit-toolbar button:hover { color: var(--paper-hi); border-color: var(--brass); }
+
+/* 模态表单 */
+.modal-wrap {
+  position: fixed; inset: 0; z-index: 70; overflow: auto;
+  background: rgba(10, 8, 5, 0.72); backdrop-filter: blur(2px);
+  padding: 6vh 16px 8vh;
+}
+.modal { max-width: 720px; margin: 0 auto; padding: 26px 30px 30px; }
+.modal::after { display: none; }
+.modal-head {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-bottom: 18px;
+  font-size: 17px; font-weight: 700; letter-spacing: 2px;
+}
+.modal-form { display: flex; flex-direction: column; gap: 14px; }
+.f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+.f-label { display: flex; flex-direction: column; gap: 5px; font-family: var(--font-hei); font-size: 12.5px; letter-spacing: 1px; color: var(--ink-soft); }
+.f-label input, .f-label textarea, .f-label select {
+  font-family: var(--font-hei); font-size: 13.5px; color: var(--ink);
+  background: rgba(255, 252, 240, 0.7); border: 1px solid var(--line);
+  padding: 7px 10px; outline: none; resize: vertical;
+}
+.f-label input:focus, .f-label textarea:focus, .f-label select:focus { border-color: var(--red); background: #fffdf2; }
+.f-checks { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 6px 0; }
+.f-check { font-family: var(--font-hei); font-size: 13px; color: var(--ink); }
+.modal-actions { display: flex; justify-content: flex-end; padding-top: 6px; border-top: 1px dashed var(--line); }
+
+.meta-edit-row { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); text-align: right; }
+
+/* 编辑模式提示条 */
+body.editing .app::before {
+  content: "—— 修订模式已开启 · 修改仅保存在本浏览器，记得导出 data.js ——";
+  display: block; text-align: center; margin-bottom: 24px;
+  font-family: var(--font-hei); font-size: 12px; letter-spacing: 3px;
+  color: var(--red); border: 1px dashed var(--red); padding: 8px;
+}
+
+/* ---------- 空状态 / 页脚 ---------- */
+.empty { padding: 40px; text-align: center; font-size: 15px; color: var(--ink-soft); }
+.empty a { color: var(--red-deep); }
+
+.site-footer {
+  text-align: center; padding: 30px 20px 90px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px;
+  color: #7a6c50;
+}
+
+/* ---------- 入场动效 ---------- */
+.tl-item, .intro, .dossier-card-wrap { animation: rise 0.55s ease both; }
+.tl-item:nth-child(2n) { animation-delay: 0.05s; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 860px) {
+  .header-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .app { padding-top: 30px; }
+  .intro { padding: 26px 22px 22px; }
+  .intro-title, .dossier-title { font-size: 23px; letter-spacing: 2px; }
+
+  .timeline::before { left: 10px; }
+  .tl-item, .tl-item.right { width: 100%; margin-left: 0; padding: 0 0 34px 34px; }
+  .tl-item.left .tl-pin, .tl-item.right .tl-pin { left: 3px; right: auto; }
+  .tl-item .tl-pin::after { display: none; }
+
+  .dossier { padding: 28px 22px 30px 40px; }
+  .punch-holes { left: 10px; }
+  .punch-holes i { width: 14px; height: 14px; }
+  .char-head { flex-direction: column; }
+  .meta-table { grid-template-columns: 84px 1fr; }
+  .f-grid { grid-template-columns: 1fr; }
+  .prev-next a { max-width: 100%; }
+}
+
+</style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#/" class="brand">
+        <span class="brand-plate">
+          <span class="brand-cn" id="brand-title">事件档案室</span>
+          <span class="brand-en" id="brand-subtitle">CHRONICLE ARCHIVE</span>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a href="#/" data-route="timeline">时间轴</a>
+        <a href="#/chars" data-route="chars">人物档案</a>
+        <button id="edit-toggle" class="edit-toggle" type="button">✎ 编辑模式</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app" class="app"></main>
+
+  <footer class="site-footer">
+    <span id="footer-note">本档案由档案室管理员整理 · 未经许可不得外传</span>
+  </footer>
+
+  <div id="edit-toolbar" class="edit-toolbar" hidden>
+    <span class="toolbar-label">修订台</span>
+    <button id="btn-export" type="button">导出 data.js</button>
+    <button id="btn-import" type="button">导入数据</button>
+    <button id="btn-reset" type="button">恢复初始数据</button>
+    <input type="file" id="import-file" accept=".js,.json" hidden>
+  </div>
+
+  <script>
+/* ============================================================
  *  data.js —— 网站全部内容都在这个文件里
  *
  *  直接修改本文件并提交到 GitHub，即可永久更新网站内容。
@@ -462,17 +727,7 @@ window.ARCHIVE_DATA = {
     return data.characters.find(function (c) { return c.id === id; });
   }
 
-  /* ---------- 冒号规范化工具：将中文冒号转为英文冒号 ---------- */
-  function normalizeColons(text) {
-    if (!text) return text;
-    // 将 [[x： [[c： [[e： 等转为英文冒号版本
-    return String(text)
-      .replace(/\[\[x\uff1a/g, '[[x:')
-      .replace(/\[\[c\uff1a/g, '[[c:')
-      .replace(/\[\[e\uff1a/g, '[[e:');
-  }
-
-  /* ---------- 正文标记解析（兼容中英文冒号） ---------- */
+  /* ---------- 正文标记解析 ---------- */
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
       .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -480,20 +735,17 @@ window.ARCHIVE_DATA = {
 
   function renderInline(text) {
     var out = esc(text);
-    // [[c:人物id|显示文字]] 或 [[c：人物id|显示文字]] —— 兼容中英文冒号
-    out = out.replace(/\[\[c[:\uff1a]([^\]|]+)\|([^\]]+)\]\]/g, function (m, id, label) {
+    out = out.replace(/\[\[c:([^\]|]+)\|([^\]]+)\]\]/g, function (m, id, label) {
       var exists = findChar(id.trim());
       return '<a class="chip chip-char" href="#/char/' + encodeURIComponent(id.trim()) + '">' +
         esc(label) + (exists ? "" : " ⚠") + "</a>";
     });
-    // [[e:事件id|显示文字]] 或 [[e：事件id|显示文字]] —— 兼容中英文冒号
-    out = out.replace(/\[\[e[:\uff1a]([^\]|]+)\|([^\]]+)\]\]/g, function (m, id, label) {
+    out = out.replace(/\[\[e:([^\]|]+)\|([^\]]+)\]\]/g, function (m, id, label) {
       var exists = findEvent(id.trim());
       return '<a class="chip chip-event" href="#/event/' + encodeURIComponent(id.trim()) + '">' +
         esc(label) + (exists ? "" : " ⚠") + "</a>";
     });
-    // [[x:被遮盖的文字]] 或 [[x：被遮盖的文字]] —— 兼容中英文冒号
-    out = out.replace(/\[\[x[:\uff1a]([^\]]+)\]\]/g, function (m, secret) {
+    out = out.replace(/\[\[x:([^\]]+)\]\]/g, function (m, secret) {
       return '<span class="redact" title="悬停查看">' + esc(secret) + "</span>";
     });
     return out;
@@ -554,4 +806,484 @@ window.ARCHIVE_DATA = {
     html += '<input id="search" class="search" placeholder="检索事件标题 / 摘要…" value="' + esc(searchQ) + '">';
     html += '<div class="filter-row"><span class="filter-label">标签</span>';
     allTags().forEach(function (t) {
-      html += '<but
+      html += '<button class="filter-chip' + (filterTag === t ? " on" : "") + '" data-tag="' + esc(t) + '">' + esc(t) + '</button>';
+    });
+    html += '</div><div class="filter-row"><span class="filter-label">人物</span>';
+    data.characters.forEach(function (c) {
+      html += '<button class="filter-chip' + (filterChar === c.id ? " on" : "") + '" data-char="' + esc(c.id) + '">' + esc(c.name) + '</button>';
+    });
+    html += '</div></div>';
+    if (isEdit()) {
+      html += '<div class="meta-edit-row"><button class="mini-btn" data-edit-meta>✎ 修订档案抬头（标题 / 引言 / 印章 / 页脚）</button></div>';
+    }
+    html += '</section>';
+
+    html += '<section class="timeline">';
+    if (!filtered.length) {
+      html += '<div class="empty paper">没有符合条件的卷宗。</div>';
+    }
+    filtered.forEach(function (e, i) {
+      html += '<article class="tl-item ' + (i % 2 ? "right" : "left") + '">';
+      html += '<div class="tl-pin"></div>';
+      html += '<div class="folder">';
+      html += '<a class="folder-body" href="#/event/' + encodeURIComponent(e.id) + '">';
+      html += '<div class="folder-top"><span class="folder-date">' + esc(e.date) + '</span>' + stampHTML(e.level) + '</div>';
+      html += '<h2 class="folder-title">' + esc(e.title) + '</h2>';
+      html += '<p class="folder-summary">' + renderInline(e.summary) + '</p>';
+      if ((e.chars || []).length) {
+        html += '<div class="folder-chars">';
+        e.chars.forEach(function (cid) {
+          var c = findChar(cid);
+          html += '<span class="mini-person">' + esc(c ? c.name : cid) + '</span>';
+        });
+        html += '</div>';
+      }
+      html += '<span class="folder-cta">调阅卷宗 →</span>';
+      html += '</a>';
+      if (isEdit()) {
+        html += '<div class="card-tools">'
+          + '<button class="mini-btn" data-edit-event="' + esc(e.id) + '">编辑</button>'
+          + '<button class="mini-btn danger" data-del-event="' + esc(e.id) + '">删除</button></div>';
+      }
+      html += '</div></article>';
+    });
+    html += '</section>';
+
+    if (isEdit()) {
+      html += '<div class="add-row"><button class="mini-btn add" data-add-event>＋ 新增事件卷宗</button></div>';
+    }
+    app.innerHTML = html;
+    bindTimeline();
+  }
+
+  function bindTimeline() {
+    var s = document.getElementById("search");
+    if (s) s.addEventListener("input", function () { searchQ = s.value; renderTimeline(); restoreFocus("search"); });
+    app.querySelectorAll("[data-tag]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        filterTag = filterTag === b.dataset.tag ? null : b.dataset.tag; renderTimeline();
+      });
+    });
+    app.querySelectorAll("[data-char]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        filterChar = filterChar === b.dataset.char ? null : b.dataset.char; renderTimeline();
+      });
+    });
+    app.querySelectorAll("[data-edit-event]").forEach(function (b) {
+      b.addEventListener("click", function () { showEventForm(b.dataset.editEvent); });
+    });
+    app.querySelectorAll("[data-del-event]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (confirm("确认删除该事件卷宗？此操作仅影响浏览器内数据，导出后才永久生效。")) {
+          data.events = data.events.filter(function (e) { return e.id !== b.dataset.delEvent; });
+          persist(); renderTimeline();
+        }
+      });
+    });
+    var add = app.querySelector("[data-add-event]");
+    if (add) add.addEventListener("click", function () { showEventForm(null); });
+    var em = app.querySelector("[data-edit-meta]");
+    if (em) em.addEventListener("click", function () { showMetaForm(); });
+  }
+
+  function restoreFocus(id) {
+    var el = document.getElementById(id);
+    if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+  }
+
+  /* ---------- 页面：人物总览 ---------- */
+  function renderChars() {
+    var html = '<section class="intro paper"><div class="intro-head"><span class="file-no">卷宗编号 · P-000</span>'
+      + stampHTML("人员名册") + '</div><h1 class="intro-title">人物档案索引</h1>'
+      + '<p class="intro-text">以下人员的详细档案已归档。点击档案卡查阅全文。</p></section>';
+
+    html += '<section class="char-grid">';
+    data.characters.forEach(function (c) {
+      html += '<div class="dossier-card-wrap">';
+      html += '<a class="dossier-card paper" href="#/char/' + encodeURIComponent(c.id) + '">';
+      html += avatarHTML(c);
+      html += '<div class="dossier-main">';
+      html += '<div class="dossier-name">' + esc(c.name) + '</div>';
+      if (c.alias) html += '<div class="dossier-alias">' + esc(c.alias) + '</div>';
+      var first = (c.fields || [])[0];
+      if (first) html += '<div class="dossier-field">' + esc(first.k) + '：' + esc(first.v) + '</div>';
+      html += '<div class="dossier-foot">' + stampHTML(c.level) + '<span class="folder-cta">调阅 →</span></div>';
+      html += '</div></a>';
+      if (isEdit()) {
+        html += '<div class="card-tools">'
+          + '<button class="mini-btn" data-edit-char="' + esc(c.id) + '">编辑</button>'
+          + '<button class="mini-btn danger" data-del-char="' + esc(c.id) + '">删除</button></div>';
+      }
+      html += '</div>';
+    });
+    html += '</section>';
+
+    if (isEdit()) html += '<div class="add-row"><button class="mini-btn add" data-add-char>＋ 新增人物档案</button></div>';
+    app.innerHTML = html;
+
+    app.querySelectorAll("[data-edit-char]").forEach(function (b) {
+      b.addEventListener("click", function () { showCharForm(b.dataset.editChar); });
+    });
+    app.querySelectorAll("[data-del-char]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (confirm("确认删除该人物档案？")) {
+          data.characters = data.characters.filter(function (c) { return c.id !== b.dataset.delChar; });
+          data.events.forEach(function (e) {
+            e.chars = (e.chars || []).filter(function (id) { return id !== b.dataset.delChar; });
+          });
+          persist(); renderChars();
+        }
+      });
+    });
+    var add = app.querySelector("[data-add-char]");
+    if (add) add.addEventListener("click", function () { showCharForm(null); });
+  }
+
+  /* ---------- 页面：事件详情 ---------- */
+  function renderEvent(id) {
+    var e = findEvent(id);
+    if (!e) { app.innerHTML = '<div class="empty paper">卷宗不存在。<a href="#/">返回时间轴</a></div>'; return; }
+
+    var sorted = clone(data.events).sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    var idx = sorted.findIndex(function (x) { return x.id === id; });
+    var prev = sorted[idx - 1], next = sorted[idx + 1];
+
+    var html = '<div class="back-row"><a class="back-link" href="#/">← 返回时间轴</a>'
+      + editBtn("", "") + (isEdit() ? '<button class="mini-btn" data-edit-event="' + esc(e.id) + '">编辑此卷宗</button>' : "") + '</div>';
+
+    html += '<section class="paper dossier">';
+    html += '<div class="punch-holes" aria-hidden="true"><i></i><i></i><i></i></div>';
+    html += '<header class="dossier-head">';
+    html += '<div class="dossier-meta-top"><span class="file-no">卷宗编号 · E-' + String(e.order || 0).padStart(3, "0") + '</span>' + stampHTML(e.level) + '</div>';
+    html += '<h1 class="dossier-title">' + esc(e.title) + '</h1>';
+    html += '<div class="dossier-date">记录日期：' + esc(e.date) + '</div>';
+    html += '</header>';
+
+    html += '<dl class="meta-table">';
+    html += '<dt>事件摘要</dt><dd>' + renderInline(e.summary) + '</dd>';
+    if ((e.tags || []).length) html += '<dt>归档标签</dt><dd>' + e.tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join(" ") + '</dd>';
+    if ((e.chars || []).length) {
+      html += '<dt>相关人员</dt><dd>';
+      e.chars.forEach(function (cid) {
+        var c = findChar(cid);
+        html += '<a class="chip chip-char" href="#/char/' + encodeURIComponent(cid) + '">' + esc(c ? c.name : cid) + '</a> ';
+      });
+      html += '</dd>';
+    }
+    html += '</dl>';
+
+    html += '<div class="article">' + renderArticle(e.article) + '</div>';
+    html += '<div class="dossier-sign">—— 档案科 · 整理完毕 ——</div>';
+    html += '</section>';
+
+    html += '<nav class="prev-next">';
+    html += prev ? '<a href="#/event/' + encodeURIComponent(prev.id) + '">← ' + esc(prev.title) + '</a>' : '<span></span>';
+    html += next ? '<a href="#/event/' + encodeURIComponent(next.id) + '">' + esc(next.title) + ' →</a>' : '<span></span>';
+    html += '</nav>';
+
+    app.innerHTML = html;
+    var b = app.querySelector("[data-edit-event]");
+    if (b) b.addEventListener("click", function () { showEventForm(e.id); });
+  }
+
+  /* ---------- 页面：人物详情 ---------- */
+  function renderChar(id) {
+    var c = findChar(id);
+    if (!c) { app.innerHTML = '<div class="empty paper">档案不存在。<a href="#/chars">返回人物索引</a></div>'; return; }
+
+    var related = data.events.filter(function (e) { return (e.chars || []).indexOf(id) >= 0; })
+      .sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+
+    var html = '<div class="back-row"><a class="back-link" href="#/chars">← 返回人物索引</a>'
+      + (isEdit() ? '<button class="mini-btn" data-edit-char="' + esc(c.id) + '">编辑此档案</button>' : "") + '</div>';
+
+    html += '<section class="paper dossier">';
+    html += '<div class="punch-holes" aria-hidden="true"><i></i><i></i><i></i></div>';
+    html += '<header class="dossier-head char-head">';
+    html += avatarHTML(c);
+    html += '<div class="char-head-main">';
+    html += '<div class="dossier-meta-top"><span class="file-no">人员编号 · ' + esc(c.id.toUpperCase()) + '</span>' + stampHTML(c.level) + '</div>';
+    html += '<h1 class="dossier-title">' + esc(c.name) + '</h1>';
+    if (c.alias) html += '<div class="dossier-date">' + esc(c.alias) + '</div>';
+    html += '</div></header>';
+
+    if ((c.fields || []).length) {
+      html += '<dl class="meta-table">';
+      c.fields.forEach(function (f) { html += '<dt>' + esc(f.k) + '</dt><dd>' + renderInline(f.v) + '</dd>'; });
+      html += '</dl>';
+    }
+
+    html += '<div class="article">' + renderArticle(c.bio) + '</div>';
+
+    if ((c.relations || []).length) {
+      html += '<h3 class="related-title">关联人物</h3><ul class="related-list rel-list">';
+      c.relations.forEach(function (r) {
+        var target = r.id ? findChar(r.id) : null;
+        var nameHtml = target
+          ? '<a class="chip chip-char" href="#/char/' + encodeURIComponent(target.id) + '">' + esc(r.name || target.name) + '</a>'
+          : '<span class="rel-plain">' + esc(r.name || "（未署名）") + '</span>';
+        html += '<li><span class="rel-name">' + nameHtml + '</span>'
+          + '<span class="rel-note">' + renderInline(r.rel || "") + '</span></li>';
+      });
+      html += '</ul>';
+    }
+
+    if (related.length) {
+      html += '<h3 class="related-title">相关卷宗</h3><ul class="related-list">';
+      related.forEach(function (e) {
+        html += '<li><span class="folder-date">' + esc(e.date) + '</span>'
+          + '<a class="chip chip-event" href="#/event/' + encodeURIComponent(e.id) + '">' + esc(e.title) + '</a></li>';
+      });
+      html += '</ul>';
+    }
+    html += '<div class="dossier-sign">—— 档案科 · 整理完毕 ——</div>';
+    html += '</section>';
+
+    app.innerHTML = html;
+    var b = app.querySelector("[data-edit-char]");
+    if (b) b.addEventListener("click", function () { showCharForm(c.id); });
+  }
+
+  /* ---------- 编辑表单（模态） ---------- */
+  function modal(title, bodyHTML, onSubmit) {
+    var wrap = document.createElement("div");
+    wrap.className = "modal-wrap";
+    wrap.innerHTML = '<div class="modal paper"><div class="modal-head"><span>' + esc(title) + '</span>'
+      + '<button class="mini-btn" data-close>✕ 关闭</button></div>'
+      + '<form class="modal-form">' + bodyHTML
+      + '<div class="modal-actions"><button type="submit" class="mini-btn add">保存修订</button></div></form></div>';
+    document.body.appendChild(wrap);
+    wrap.querySelector("[data-close]").addEventListener("click", function () { wrap.remove(); });
+    wrap.addEventListener("click", function (ev) { if (ev.target === wrap) wrap.remove(); });
+    wrap.querySelector("form").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      onSubmit(wrap.querySelector("form"));
+      wrap.remove();
+      persist();
+      route();
+    });
+  }
+
+  function field(label, name, value, type) {
+    if (type === "textarea") {
+      return '<label class="f-label">' + label + '<textarea name="' + name + '" rows="7">' + esc(value || "") + '</textarea></label>';
+    }
+    return '<label class="f-label">' + label + '<input name="' + name + '" value="' + esc(value || "") + '"></label>';
+  }
+
+  function showEventForm(id) {
+    var e = id ? findEvent(id) : { id: "", order: (data.events.length + 1) * 10, date: "", title: "", summary: "", level: "内部", tags: [], chars: [], article: "" };
+    var isNew = !id;
+
+    var levels = ["公开", "内部", "机密", "绝密"].map(function (lv) {
+      return '<option' + (e.level === lv ? " selected" : "") + '>' + lv + '</option>';
+    }).join("");
+
+    var charBoxes = data.characters.map(function (c) {
+      return '<label class="f-check"><input type="checkbox" name="chars" value="' + esc(c.id) + '"'
+        + ((e.chars || []).indexOf(c.id) >= 0 ? " checked" : "") + '> ' + esc(c.name) + '</label>';
+    }).join("");
+
+    var body = '<div class="f-grid">'
+      + field("事件 ID（英文，唯一" + (isNew ? "" : "，不可修改") + "）", "id", e.id)
+      + field("排序数字（越小越靠前）", "order", e.order)
+      + field("日期文字", "date", e.date)
+      + field("标题", "title", e.title)
+      + '<label class="f-label">保密等级<select name="level">' + levels + '</select></label>'
+      + field("标签（用 / 分隔）", "tags", (e.tags || []).join(" / "))
+      + '</div>'
+      + field("摘要", "summary", e.summary, "textarea")
+      + '<div class="f-label">相关人员<div class="f-checks">' + charBoxes + '</div></div>'
+      + field("正文（空行分段；[[c:人物id|人名]] [[e:事件id|事件名]] [[x:遮盖]]）", "article", e.article, "textarea");
+
+    modal(isNew ? "新增事件卷宗" : "修订卷宗 · " + e.title, body, function (form) {
+      var fd = new FormData(form);
+      var nid = String(fd.get("id")).trim();
+      if (!nid) { alert("ID 不能为空"); throw new Error("no id"); }
+      if (isNew && findEvent(nid)) { alert("ID 已存在"); throw new Error("dup id"); }
+      var target = isNew ? {} : e;
+      target.id = isNew ? nid : e.id;
+      target.order = Number(fd.get("order")) || 0;
+      target.date = String(fd.get("date"));
+      target.title = String(fd.get("title"));
+      target.level = String(fd.get("level"));
+      target.summary = String(fd.get("summary"));
+      target.tags = String(fd.get("tags")).split(/[\/，,]/).map(function (s) { return s.trim(); }).filter(Boolean);
+      target.chars = fd.getAll("chars").map(String);
+      target.article = String(fd.get("article"));
+      if (isNew) data.events.push(target);
+    });
+  }
+
+  function showCharForm(id) {
+    var c = id ? findChar(id) : { id: "", name: "", alias: "", level: "内部", fields: [], bio: "" };
+    var isNew = !id;
+
+    var levels = ["公开", "内部", "机密", "绝密"].map(function (lv) {
+      return '<option' + (c.level === lv ? " selected" : "") + '>' + lv + '</option>';
+    }).join("");
+
+    var fieldsText = (c.fields || []).map(function (f) { return f.k + "：" + f.v; }).join("\n");
+    var relsText = (c.relations || []).map(function (r) { return (r.name || "") + "：" + (r.rel || ""); }).join("\n");
+
+    var body = '<div class="f-grid">'
+      + field("人物 ID（英文，唯一）", "id", c.id)
+      + field("姓名", "name", c.name)
+      + field("称号 / 代号", "alias", c.alias)
+      + '<label class="f-label">保密等级<select name="level">' + levels + '</select></label>'
+      + '</div>'
+      + field("档案表格（每行一条，格式：项目：内容）", "fields", fieldsText, "textarea")
+      + field("关联人物（每行一条，格式：人物名字：关系描述。名字与档案一致时可点击跳转）", "relations", relsText, "textarea")
+      + field("人物设定正文（空行分段；支持特殊标记）", "bio", c.bio, "textarea");
+
+    modal(isNew ? "新增人物档案" : "修订档案 · " + c.name, body, function (form) {
+      var fd = new FormData(form);
+      var nid = String(fd.get("id")).trim();
+      if (!nid) { alert("ID 不能为空"); throw new Error("no id"); }
+      if (isNew && findChar(nid)) { alert("ID 已存在"); throw new Error("dup id"); }
+      var target = isNew ? {} : c;
+      target.id = isNew ? nid : c.id;
+      target.name = String(fd.get("name"));
+      target.alias = String(fd.get("alias"));
+      target.level = String(fd.get("level"));
+      target.fields = String(fd.get("fields")).split("\n").map(function (line) {
+        var m = line.split(/[:：]/);
+        if (m.length < 2) return null;
+        return { k: m[0].trim(), v: m.slice(1).join("：").trim() };
+      }).filter(Boolean);
+      target.bio = String(fd.get("bio"));
+      target.relations = String(fd.get("relations")).split("\n").map(function (line) {
+        var m = line.split(/[:：]/);
+        if (m.length < 2) return null;
+        var name = m[0].trim();
+        var rel = m.slice(1).join("：").trim();
+        if (!name) return null;
+        var norm = function (s) { return s.replace(/[\s·・]/g, ""); };
+        var found = data.characters.find(function (x) { return norm(x.name) === norm(name); });
+        return { id: found ? found.id : "", name: name, rel: rel };
+      }).filter(Boolean);
+      if (isNew) data.characters.push(target);
+    });
+  }
+
+  /* ---------- 编辑：档案抬头（站点信息） ---------- */
+  function showMetaForm() {
+    var m = data.meta;
+    var body = '<div class="f-grid">'
+      + field("档案室标题（页头与首页大字）", "title", m.title)
+      + field("英文副标题", "subtitle", m.subtitle)
+      + field("卷宗编号", "fileNo", m.fileNo || "卷宗编号 · A-114")
+      + field("印章文字", "stamp", m.stamp)
+      + '</div>'
+      + field("首页引言（描述文字）", "intro", m.intro, "textarea")
+      + field("页脚文字", "footer", m.footer);
+    modal("修订档案抬头", body, function (form) {
+      var fd = new FormData(form);
+      data.meta.title = String(fd.get("title"));
+      data.meta.subtitle = String(fd.get("subtitle"));
+      data.meta.fileNo = String(fd.get("fileNo"));
+      data.meta.stamp = String(fd.get("stamp"));
+      data.meta.intro = String(fd.get("intro"));
+      data.meta.footer = String(fd.get("footer"));
+    });
+  }
+
+  /* ---------- 导入 / 导出 / 重置 ---------- */
+  document.getElementById("btn-export").addEventListener("click", function () {
+    var text = "/* 由档案室编辑模式导出 —— 直接替换 js/data.js 后提交 GitHub 即可永久生效 */\n"
+      + "window.ARCHIVE_DATA = " + JSON.stringify(data, null, 2) + ";\n";
+    var blob = new Blob([text], { type: "text/javascript;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "data.js";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById("btn-import").addEventListener("click", function () {
+    document.getElementById("import-file").click();
+  });
+
+  document.getElementById("import-file").addEventListener("change", function (ev) {
+    var f = ev.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var text = String(reader.result);
+        var obj;
+        try { obj = JSON.parse(text); }
+        catch (e1) {
+          var m = text.match(/ARCHIVE_DATA\s*=\s*(\{[\s\S]*\})\s*;?\s*$/);
+          if (!m) throw new Error("无法解析文件");
+          obj = JSON.parse(m[1]);
+        }
+        if (!obj.events || !obj.characters || !obj.meta) throw new Error("数据缺少必要字段");
+        data = obj;
+        persist();
+        route();
+        alert("导入成功。");
+      } catch (err) { alert("导入失败：" + err.message); }
+    };
+    reader.readAsText(f);
+    ev.target.value = "";
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    if (confirm("恢复为 data.js 中的初始数据？浏览器内的全部修改将被清除。")) {
+      localStorage.removeItem(LS_DATA);
+      data = clone(window.ARCHIVE_DATA);
+      route();
+    }
+  });
+
+  /* ---------- 路由 ---------- */
+  function applyMeta() {
+    var m = data.meta;
+    document.getElementById("brand-title").textContent = m.title || "事件档案室";
+    document.getElementById("brand-subtitle").textContent = m.subtitle || "CHRONICLE ARCHIVE";
+    document.getElementById("footer-note").textContent = m.footer || "";
+    document.title = (m.title || "事件档案室") + " · CHRONICLE ARCHIVE";
+  }
+
+  function route() {
+    applyMeta();
+    var hash = location.hash || "#/";
+    document.querySelectorAll(".main-nav a").forEach(function (a) {
+      a.classList.remove("active");
+    });
+
+    var m;
+    if ((m = hash.match(/^#\/event\/(.+)$/))) {
+      renderEvent(decodeURIComponent(m[1]));
+    } else if ((m = hash.match(/^#\/char\/(.+)$/))) {
+      renderChar(decodeURIComponent(m[1]));
+    } else if (hash === "#/chars") {
+      renderChars();
+      setNav("chars");
+    } else {
+      renderTimeline();
+      setNav("timeline");
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function setNav(r) {
+    var a = document.querySelector('.main-nav a[data-route="' + r + '"]');
+    if (a) a.classList.add("active");
+  }
+
+  /* ---------- 启动 ---------- */
+  document.getElementById("edit-toggle").addEventListener("click", function () {
+    setEdit(!isEdit());
+    route();
+  });
+
+  setEdit(isEdit());
+  window.addEventListener("hashchange", route);
+  route();
+})();
+
+</script>
+</body>
+</html>
