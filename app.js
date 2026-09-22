@@ -1,10 +1,10 @@
 /* ============================================================
- *  app.js —— 渲染 / 路由 / 编辑逻辑（炼金术深蓝版）
+ *  app.js —— 炼金术深蓝版（含区块化编辑器）
  * ============================================================ */
 (function () {
   "use strict";
 
-  var LS_DATA = "archive_alchemy_v2";
+  var LS_DATA = "archive_alchemy_v3";
   var LS_EDIT = "archive_edit_mode";
   var app = document.getElementById("app");
 
@@ -110,11 +110,11 @@
     html += '<p class="intro-text">' + renderInline(meta.intro || "") + '</p>';
     html += '<div class="filter-bar" style="margin-top:22px;border-top:1px dashed var(--line);padding-top:16px;">';
     html += '<input id="search" class="search" placeholder="检索事件标题 / 摘要…" value="' + esc(searchQ) + '">';
-    html += '<div class="filter-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;"><span class="filter-label" style="font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--ink-faint);margin-right:4px;">标签</span>';
+    html += '<div class="filter-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--ink-faint);margin-right:4px;">标签</span>';
     allTags().forEach(function (t) {
       html += '<button class="filter-chip' + (filterTag === t ? " on" : "") + '" data-tag="' + esc(t) + '">' + esc(t) + '</button>';
     });
-    html += '</div><div class="filter-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;"><span class="filter-label" style="font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--ink-faint);margin-right:4px;">人物</span>';
+    html += '</div><div class="filter-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--ink-faint);margin-right:4px;">人物</span>';
     data.characters.forEach(function (c) {
       html += '<button class="filter-chip' + (filterChar === c.id ? " on" : "") + '" data-char="' + esc(c.id) + '">' + esc(c.name) + '</button>';
     });
@@ -293,7 +293,25 @@
     if (av) av.addEventListener("click", function () { showVersionForm(e.id); });
   }
 
-  /* ==================== 人物详情 ==================== */
+  /* ==================== 人物详情（区块化面板） ==================== */
+
+  // 将旧版数据转换为区块格式
+  function charToBlocks(c) {
+    if (c.blocks && c.blocks.length) return c.blocks;
+    var blocks = [];
+    if (c.fields && c.fields.length) {
+      blocks.push({
+        type: "table", title: "档案资料",
+        content: c.fields.map(function (f) { return f.k + "：" + f.v; }).join("\n")
+      });
+    }
+    if (c.bio) {
+      blocks.push({ type: "article", title: "人物设定", content: c.bio });
+    }
+    if (!blocks.length) blocks.push({ type: "article", title: "人物设定", content: "" });
+    return blocks;
+  }
+
   function renderChar(id) {
     var c = findChar(id);
     if (!c) { app.innerHTML = '<div class="empty paper">档案不存在。<a href="#/chars">返回人物索引</a></div>'; return; }
@@ -306,35 +324,41 @@
 
     html += '<section class="paper dossier">';
     html += '<div class="punch-holes" aria-hidden="true"><i></i><i></i><i></i></div>';
-    html += '<header class="dossier-head" style="display:flex;gap:26px;align-items:flex-start;">';
+
+    // 头部：portrait + 名字/称号/保密等级
+    html += '<header class="dossier-head char-head">';
     html += avatarHTML(c);
-    html += '<div style="flex:1;min-width:0;">';
-    html += '<div class="dossier-meta-top" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;"><span class="file-no">人员编号 · ' + esc(c.id.toUpperCase()) + '</span>' + stampHTML(c.level) + '</div>';
+    html += '<div class="char-head-main">';
+    html += '<div class="dossier-meta-top" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;">';
+    html += '<span class="file-no">人员编号 · ' + esc(c.id.toUpperCase()) + '</span>';
+    html += stampHTML(c.level);
+    html += '</div>';
     html += '<h1 class="dossier-title">' + esc(c.name) + '</h1>';
-    if (c.alias) html += '<div class="dossier-date">' + esc(c.alias) + '</div>';
+    if (c.alias) html += '<div class="dossier-alias">' + esc(c.alias) + '</div>';
     html += '</div></header>';
 
-    if ((c.fields || []).length) {
-      html += '<dl class="meta-table">';
-      c.fields.forEach(function (f) { html += '<dt>' + esc(f.k) + '</dt><dd>' + renderInline(f.v) + '</dd>'; });
-      html += '</dl>';
-    }
-
+    // 时空足迹
     if ((c.timeline || []).length) {
-      html += '<h3 style="margin-top:24px;padding-top:14px;border-top:1px dashed var(--line);font-family:var(--font-hei);font-size:13px;letter-spacing:4px;color:var(--ink-soft);">时空足迹</h3>';
-      html += '<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;">';
+      html += '<div style="margin-bottom:22px;padding:12px 0;border-bottom:1px dashed var(--line);">';
+      html += '<span style="font-family:var(--font-hei);font-size:12px;letter-spacing:3px;color:var(--ink-faint);margin-right:10px;">时空足迹</span>';
+      html += '<div style="display:inline-flex;flex-wrap:wrap;gap:8px;margin-top:8px;">';
       c.timeline.forEach(function (t) {
         var fc = (data.factions && data.factions[t.faction]) ? data.factions[t.faction].color : "var(--gold)";
-        html += '<span style="display:inline-block;padding:4px 10px;border:1px solid var(--line);font-size:12px;font-family:var(--font-hei);">';
+        html += '<span style="display:inline-block;padding:3px 10px;border:1px solid var(--line);font-size:12px;font-family:var(--font-hei);">';
         html += '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + fc + ';margin-right:6px;"></span>';
         html += esc(t.period) + ' · ' + esc(t.location);
         html += '</span>';
       });
-      html += '</div>';
+      html += '</div></div>';
     }
 
-    html += '<div class="article">' + renderArticle(c.bio) + '</div>';
+    // 区块面板
+    var blocks = charToBlocks(c);
+    blocks.forEach(function (blk, idx) {
+      html += renderBlockHTML(blk, idx, false);
+    });
 
+    // 关联人物
     if ((c.relations || []).length) {
       html += '<h3 style="margin-top:30px;padding-top:16px;border-top:1px dashed var(--line);font-family:var(--font-hei);font-size:13px;letter-spacing:4px;color:var(--ink-soft);">关联人物</h3><ul style="list-style:none;margin-top:12px;">';
       c.relations.forEach(function (r) {
@@ -360,6 +384,53 @@
     app.innerHTML = html;
     var b = app.querySelector("[data-edit-char]");
     if (b) b.addEventListener("click", function () { showCharForm(c.id); });
+  }
+
+  function renderBlockHTML(blk, idx, editing) {
+    var typeLabel = { table: "表", article: "文", heading: "字" }[blk.type] || "文";
+    var html = '';
+    if (editing) {
+      html += '<div class="block-panel editing" data-bidx="' + idx + '" data-btype="' + blk.type + '">';
+      html += '<div class="block-header">';
+      html += '<span class="block-type-tag">' + typeLabel + '</span>';
+      html += '<input type="text" class="block-title-input" value="' + esc(blk.title) + '" placeholder="面板名称" data-btitle>';
+      html += '<div class="block-tools">';
+      html += '<button type="button" data-bmove="-1" title="上移">↑</button>';
+      html += '<button type="button" data-bmove="1" title="下移">↓</button>';
+      html += '<button type="button" data-bdel title="删除">✕</button>';
+      html += '</div></div>';
+      html += '<div class="block-body">';
+      if (blk.type === "table") {
+        html += '<textarea class="block-table-editor" data-bcontent placeholder="每行一条，格式：项目：内容" rows="6">' + esc(blk.content) + '</textarea>';
+      } else if (blk.type === "heading") {
+        html += '<textarea class="block-content-textarea" data-bcontent placeholder="大字内容" rows="3">' + esc(blk.content) + '</textarea>';
+      } else {
+        html += '<textarea class="block-content-textarea" data-bcontent placeholder="正文内容（空行分段；支持 [[c:id|人名]] [[e:id|事件]] [[x:遮盖]] ）" rows="8">' + esc(blk.content) + '</textarea>';
+      }
+      html += '</div></div>';
+    } else {
+      html += '<div class="block-panel">';
+      html += '<div class="block-header">';
+      html += '<span class="block-type-tag">' + typeLabel + '</span>';
+      html += '<span class="block-title-text">' + esc(blk.title) + '</span>';
+      html += '</div>';
+      html += '<div class="block-body">';
+      if (blk.type === "table") {
+        html += '<dl class="meta-table">';
+        blk.content.split("\n").forEach(function (line) {
+          var m = line.split(/[:：]/);
+          if (m.length < 2) return;
+          html += '<dt>' + esc(m[0].trim()) + '</dt><dd>' + renderInline(m.slice(1).join("：").trim()) + '</dd>';
+        });
+        html += '</dl>';
+      } else if (blk.type === "heading") {
+        html += '<div style="font-size:26px;letter-spacing:6px;font-weight:700;text-align:center;padding:20px 10px;line-height:1.6;">' + renderInline(blk.content) + '</div>';
+      } else {
+        html += '<div class="article">' + renderArticle(blk.content) + '</div>';
+      }
+      html += '</div></div>';
+    }
+    return html;
   }
 
   /* ==================== 关系图谱 ==================== */
@@ -673,15 +744,18 @@
     });
   }
 
+  /* ---------- 人物区块化编辑器 ---------- */
   function showCharForm(id) {
-    var c = id ? findChar(id) : { id: "", name: "", alias: "", level: "内部", fields: [], bio: "", timeline: [] };
+    var c = id ? findChar(id) : { id: "", name: "", alias: "", level: "内部", timeline: [], relations: [], blocks: [] };
     var isNew = !id;
     var levels = ["公开", "内部", "机密", "绝密"].map(function (lv) {
       return '<option' + (c.level === lv ? " selected" : "") + '>' + lv + '</option>';
     }).join("");
-    var fieldsText = (c.fields || []).map(function (f) { return f.k + "：" + f.v; }).join("\n");
     var relsText = (c.relations || []).map(function (r) { return (r.name || "") + "：" + (r.rel || ""); }).join("\n");
     var timelineText = (c.timeline || []).map(function (t) { return t.period + "|" + t.location + "|" + t.faction; }).join("\n");
+
+    // 确保有 blocks
+    var blocks = charToBlocks(c);
 
     var body = '<div class="f-grid">'
       + field("人物 ID", "id", c.id)
@@ -689,10 +763,21 @@
       + field("称号", "alias", c.alias)
       + '<label class="f-label">保密等级<select name="level">' + levels + '</select></label>'
       + '</div>'
-      + field("档案表格（项目：内容）", "fields", fieldsText, "textarea")
       + field("时空足迹（格式：时期|地点|阵营）", "timeline", timelineText, "textarea")
-      + field("关联人物（名字：关系）", "relations", relsText, "textarea")
-      + field("正文", "bio", c.bio, "textarea");
+      + field("关联人物（名字：关系）", "relations", relsText, "textarea");
+
+    // 区块编辑器
+    body += '<div style="margin-top:10px;padding-top:14px;border-top:2px solid var(--ink);"><div style="font-family:var(--font-hei);font-size:13px;letter-spacing:3px;margin-bottom:10px;">档案面板（可上下移动、自定义名称）</div>';
+    body += '<div id="block-editor">';
+    blocks.forEach(function (blk, idx) {
+      body += renderBlockHTML(blk, idx, true);
+    });
+    body += '</div>';
+    body += '<div class="add-block-bar">';
+    body += '<button type="button" data-add-block="table">＋ 添加表格面板</button> · ';
+    body += '<button type="button" data-add-block="article">＋ 添加文本面板</button> · ';
+    body += '<button type="button" data-add-block="heading">＋ 添加大字面板</button>';
+    body += '</div></div>';
 
     modal(isNew ? "新增人物" : "修订人物", body, function (form) {
       var fd = new FormData(form);
@@ -704,17 +789,11 @@
       target.name = String(fd.get("name"));
       target.alias = String(fd.get("alias"));
       target.level = String(fd.get("level"));
-      target.fields = normalizeColons(String(fd.get("fields"))).split("\n").map(function (line) {
-        var m = line.split(/[:：]/);
-        if (m.length < 2) return null;
-        return { k: m[0].trim(), v: m.slice(1).join(":").trim() };
-      }).filter(Boolean);
       target.timeline = String(fd.get("timeline")).split("\n").map(function (line) {
         var p = line.split("|");
         if (p.length < 3) return null;
         return { period: p[0].trim(), location: p[1].trim(), faction: p[2].trim() };
       }).filter(Boolean);
-      target.bio = normalizeColons(String(fd.get("bio")));
       target.relations = String(fd.get("relations")).split("\n").map(function (line) {
         var m = line.split(/[:：]/);
         if (m.length < 2) return null;
@@ -725,7 +804,83 @@
         var found = data.characters.find(function (x) { return norm(x.name) === norm(name); });
         return { id: found ? found.id : "", name: name, rel: rel };
       }).filter(Boolean);
+
+      // 读取区块
+      var editor = document.getElementById("block-editor");
+      var blockEls = editor.querySelectorAll(".block-panel");
+      target.blocks = [];
+      blockEls.forEach(function (el) {
+        var type = el.dataset.btype || "article";
+        var titleIn = el.querySelector("[data-btitle]");
+        var contentIn = el.querySelector("[data-bcontent]");
+        target.blocks.push({
+          type: type,
+          title: titleIn ? titleIn.value : "",
+          content: contentIn ? normalizeColons(contentIn.value) : ""
+        });
+      });
+
+      // 兼容旧字段
+      target.fields = [];
+      target.bio = "";
+      target.blocks.forEach(function (blk) {
+        if (blk.type === "table") {
+          blk.content.split("\n").forEach(function (line) {
+            var m = line.split(/[:：]/);
+            if (m.length >= 2) target.fields.push({ k: m[0].trim(), v: m.slice(1).join("：").trim() });
+          });
+        } else if (blk.type === "article" && !target.bio) {
+          target.bio = blk.content;
+        }
+      });
+
       if (isNew) data.characters.push(target);
+    });
+
+    // 绑定区块操作（延迟，等DOM插入后）
+    setTimeout(function () {
+      bindBlockEditor();
+    }, 50);
+  }
+
+  function bindBlockEditor() {
+    var editor = document.getElementById("block-editor");
+    if (!editor) return;
+
+    // 移动
+    editor.querySelectorAll("[data-bmove]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var el = btn.closest(".block-panel");
+        var dir = parseInt(btn.dataset.bmove);
+        if (dir < 0 && el.previousElementSibling) {
+          editor.insertBefore(el, el.previousElementSibling);
+        } else if (dir > 0 && el.nextElementSibling) {
+          editor.insertBefore(el.nextElementSibling, el);
+        }
+      });
+    });
+
+    // 删除
+    editor.querySelectorAll("[data-bdel]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (confirm("删除此面板？")) {
+          btn.closest(".block-panel").remove();
+        }
+      });
+    });
+
+    // 添加
+    document.querySelectorAll("[data-add-block]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var type = btn.dataset.addBlock;
+        var titles = { table: "档案表格", article: "人物设定", heading: "大字标题" };
+        var newBlock = { type: type, title: titles[type] || "新面板", content: "" };
+        var idx = editor.querySelectorAll(".block-panel").length;
+        var div = document.createElement("div");
+        div.innerHTML = renderBlockHTML(newBlock, idx, true);
+        editor.appendChild(div.firstElementChild);
+        bindBlockEditor(); // 重新绑定
+      });
     });
   }
 

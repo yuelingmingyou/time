@@ -1,5 +1,5 @@
 /* ============================================================
- *  莫比乌斯档案室 —— 炼金术风格（深蓝羊皮纸）
+ *  莫比乌斯档案室 —— 炼金术深蓝羊皮纸风格
  * ============================================================ */
 
 :root {
@@ -18,7 +18,6 @@
   --gold: #c9a84c;
   --gold-dim: #8a7340;
   --line: rgba(26, 26, 46, 0.28);
-  --glow: rgba(201, 168, 76, 0.15);
 
   --font-serif: "Cinzel", "Songti SC", "STSong", "Noto Serif CJK SC", serif;
   --font-hei: "Cinzel", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -40,7 +39,6 @@ body {
   min-height: 100vh;
 }
 
-/* 全局星尘噪点 */
 .noise {
   position: fixed; inset: 0; pointer-events: none; z-index: 50;
   opacity: 0.35; mix-blend-mode: overlay;
@@ -75,15 +73,8 @@ body {
   transform: rotate(-0.6deg);
 }
 
-.brand-cn {
-  font-family: var(--font-serif); font-weight: 700;
-  font-size: 19px; letter-spacing: 4px; color: var(--gold);
-}
-
-.brand-en {
-  font-family: var(--font-mono); font-size: 9.5px;
-  letter-spacing: 3px; color: var(--gold-dim);
-}
+.brand-cn { font-family: var(--font-serif); font-weight: 700; font-size: 19px; letter-spacing: 4px; color: var(--gold); }
+.brand-en { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 3px; color: var(--gold-dim); }
 
 .main-nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
@@ -109,8 +100,7 @@ body {
 
 .paper {
   position: relative;
-  background:
-    linear-gradient(175deg, var(--parchment-hi) 0%, var(--parchment) 55%, var(--parchment-lo) 100%);
+  background: linear-gradient(175deg, var(--parchment-hi) 0%, var(--parchment) 55%, var(--parchment-lo) 100%);
   border: 1px solid #8a7340;
   box-shadow: 0 2px 0 rgba(0,0,0,0.45), 0 18px 40px rgba(0, 0, 0, 0.55);
 }
@@ -123,7 +113,7 @@ body {
   box-shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
 
-/* ---------- 印章 ---------- */
+/* ---------- 通用组件 ---------- */
 .stamp {
   display: inline-block; font-family: var(--font-hei); font-weight: 700;
   font-size: 12px; letter-spacing: 5px; padding: 3px 12px 3px 14px;
@@ -135,7 +125,6 @@ body {
 .stamp-机密 { color: var(--crimson); }
 .stamp-绝密 { color: var(--crimson-deep); border-width: 3px; outline: 1px solid currentColor; outline-offset: 3px; }
 
-/* ---------- 通用组件 ---------- */
 .mini-btn {
   font-family: var(--font-hei); font-size: 12px; letter-spacing: 1px; cursor: pointer;
   background: var(--parchment-hi); color: var(--ink); border: 1px solid var(--ink-soft);
@@ -177,6 +166,132 @@ body {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px;
   color: #4a5570;
 }
+
+/* ---------- 人物照片框（修复版） ---------- */
+.portrait {
+  flex: none; width: 108px; height: 132px; transform: rotate(-1.5deg);
+  background: linear-gradient(160deg, #d8c89e, #c8b586);
+  border: 6px solid var(--parchment-hi);
+  outline: 1px solid #8a7340;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  position: relative; overflow: hidden;
+}
+.portrait span {
+  font-size: 42px; font-weight: 700; color: var(--ink-soft); font-family: var(--font-serif);
+  line-height: 1; z-index: 2;
+}
+.portrait i {
+  font-family: var(--font-mono); font-style: normal; font-size: 7.5px; letter-spacing: 1.5px;
+  color: var(--ink-faint); text-align: center; line-height: 1.5; z-index: 2;
+}
+
+/* ---------- 人物详情头部（修复版） ---------- */
+.char-head {
+  display: flex; gap: 22px; align-items: flex-start;
+  flex-wrap: nowrap;
+}
+.char-head .portrait {
+  flex-shrink: 0;
+  width: 96px; height: 118px;
+}
+.char-head-main {
+  flex: 1; min-width: 0;
+  padding-top: 4px;
+}
+.char-head-main .dossier-title {
+  font-size: 28px; letter-spacing: 2px; font-weight: 700;
+  line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;
+  margin-bottom: 6px;
+}
+.char-head-main .dossier-alias {
+  font-family: var(--font-hei); font-size: 14px; color: var(--crimson-deep);
+  letter-spacing: 1px; word-break: keep-all;
+}
+
+/* ---------- 区块面板（图3风格） ---------- */
+.block-panel {
+  margin-bottom: 20px;
+  border: 2px solid var(--ink);
+  background: linear-gradient(175deg, var(--parchment-hi), var(--parchment));
+}
+.block-header {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--ink); color: var(--parchment-hi);
+  padding: 8px 14px;
+  font-family: var(--font-hei); font-size: 13px; letter-spacing: 2px;
+}
+.block-type-tag {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border: 1px solid var(--parchment-hi);
+  font-size: 11px; flex-shrink: 0;
+}
+.block-title-text {
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.block-tools {
+  display: flex; gap: 4px; margin-left: auto;
+}
+.block-tools button {
+  font-family: var(--font-hei); font-size: 11px; cursor: pointer;
+  background: transparent; color: var(--parchment-hi); border: 1px solid rgba(201,168,76,0.4);
+  padding: 2px 8px;
+}
+.block-tools button:hover { border-color: var(--gold); color: var(--gold); }
+
+.block-body {
+  padding: 16px 18px;
+}
+.block-body .article { font-size: 15px; line-height: 2.0; }
+.block-body .article p { margin-bottom: 1em; text-indent: 2em; }
+.block-body .article p:last-child { margin-bottom: 0; }
+
+/* 区块编辑模式 */
+.block-panel.editing .block-header {
+  background: #1e2a44;
+}
+.block-panel.editing .block-body {
+  padding: 12px;
+}
+.block-panel.editing .block-title-input {
+  flex: 1; min-width: 0;
+  font-family: var(--font-hei); font-size: 13px; letter-spacing: 1px;
+  background: rgba(255,255,255,0.1); color: var(--parchment-hi);
+  border: 1px solid rgba(201,168,76,0.3); padding: 4px 8px;
+}
+.block-panel.editing .block-title-input:focus { outline: none; border-color: var(--gold); }
+
+.block-content-textarea {
+  width: 100%; min-height: 120px;
+  font-family: var(--font-hei); font-size: 13.5px; line-height: 1.9;
+  background: rgba(255,252,240,0.7); color: var(--ink);
+  border: 1px solid var(--line); padding: 10px;
+  resize: vertical;
+}
+.block-content-textarea:focus { outline: none; border-color: var(--crimson); background: #fffdf2; }
+
+.block-table-editor {
+  width: 100%; min-height: 100px;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.8;
+  background: rgba(255,252,240,0.7); color: var(--ink);
+  border: 1px solid var(--line); padding: 10px;
+  resize: vertical;
+}
+
+/* 添加区块按钮 */
+.add-block-bar {
+  text-align: center; margin: 24px 0;
+  padding: 16px;
+  border: 2px dashed var(--gold-dim);
+  background: rgba(201,168,76,0.05);
+}
+.add-block-bar button {
+  font-family: var(--font-hei); font-size: 13px; letter-spacing: 2px;
+  background: transparent; color: var(--ink-soft); border: none;
+  cursor: pointer; padding: 6px 16px;
+}
+.add-block-bar button:hover { color: var(--gold); }
 
 /* ---------- 时间轴 ---------- */
 .timeline { position: relative; padding: 10px 0 30px; }
@@ -396,4 +511,7 @@ body.editing .app::before {
   .net-canvas { height: 400px; }
   .timeline::before { left: 10px; }
   .tl-item, .tl-item.right { width: 100%; margin-left: 0; padding: 0 0 34px 34px; }
+  .char-head { flex-wrap: wrap; }
+  .char-head .portrait { width: 72px; height: 90px; }
+  .char-head-main .dossier-title { font-size: 22px; }
 }
