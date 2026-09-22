@@ -169,21 +169,17 @@ body {
 
 /* ---------- 人物照片框（修复版） ---------- */
 .portrait {
-  flex: none; width: 108px; height: 132px; transform: rotate(-1.5deg);
+  flex: none; width: 96px; height: 118px; transform: rotate(-1.5deg);
   background: linear-gradient(160deg, #d8c89e, #c8b586);
-  border: 6px solid var(--parchment-hi);
+  border: 5px solid var(--parchment-hi);
   outline: 1px solid #8a7340;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  display: flex; align-items: center; justify-content: center;
   position: relative; overflow: hidden;
 }
 .portrait span {
-  font-size: 42px; font-weight: 700; color: var(--ink-soft); font-family: var(--font-serif);
-  line-height: 1; z-index: 2;
-}
-.portrait i {
-  font-family: var(--font-mono); font-style: normal; font-size: 7.5px; letter-spacing: 1.5px;
-  color: var(--ink-faint); text-align: center; line-height: 1.5; z-index: 2;
+  font-size: 48px; font-weight: 700; color: var(--ink-soft); font-family: var(--font-serif);
+  line-height: 1.1; z-index: 2;
 }
 
 /* ---------- 人物详情头部（修复版） ---------- */
@@ -193,7 +189,10 @@ body {
 }
 .char-head .portrait {
   flex-shrink: 0;
-  width: 96px; height: 118px;
+  width: 88px; height: 108px;
+}
+.char-head .portrait span {
+  font-size: 42px;
 }
 .char-head-main {
   flex: 1; min-width: 0;

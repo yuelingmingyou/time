@@ -79,7 +79,7 @@
 
   function avatarHTML(c) {
     var initial = (c.name || "?").replace(/[\s·・]/g, "").charAt(0);
-    return '<div class="portrait"><span>' + esc(initial) + '</span><i>PHOTO<br>NOT AVAILABLE</i></div>';
+    return '<div class="portrait"><span>' + esc(initial) + '</span></div>';
   }
 
   /* ==================== 时间轴 ==================== */
