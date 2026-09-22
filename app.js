@@ -248,7 +248,9 @@
       html += '<div class="version-tabs">';
       versions.forEach(function (v, i) {
         html += '<button class="version-tab' + (i === activeIndex ? ' active' : '') + '" data-vidx="' + i + '">' + esc(v.title)
-          + (v.isDefault ? '<span class="v-default">●</span>' : '') + '</button>';
+          + (v.isDefault ? '<span class="v-default">●</span>' : '')
+          + (isEdit() && !v.isDefault ? '<span class="v-del" data-del-version="' + i + '" title="删除此版本">✕</span>' : '')
+          + '</button>';
       });
       if (isEdit()) html += '<button class="mini-btn add" data-add-version style="margin-left:auto;border:none;background:transparent;color:var(--verdigris);font-size:11px;">＋ 新增版本</button>';
       html += '</div>';
@@ -284,6 +286,18 @@
         app.querySelectorAll('.version-tab').forEach(function (t) { t.classList.remove('active'); });
         tab.classList.add('active');
         app.querySelector('#version-body').innerHTML = '<div class="article">' + renderArticle(versions[idx].article) + '</div>';
+      });
+    });
+
+    app.querySelectorAll("[data-del-version]").forEach(function (btn) {
+      btn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        var idx = parseInt(btn.dataset.delVersion, 10);
+        if (confirm("确认删除该版本？")) {
+          e.versions.splice(idx, 1);
+          persist();
+          renderEvent(e.id);
+        }
       });
     });
 
