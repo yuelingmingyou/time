@@ -699,6 +699,15 @@
       return '<label style="font-family:var(--font-hei);font-size:13px;color:var(--ink);"><input type="checkbox" name="chars" value="' + esc(c.id) + '"' + ((e.chars || []).indexOf(c.id) >= 0 ? " checked" : "") + '> ' + esc(c.name) + '</label>';
     }).join("");
 
+    // 提取默认版本正文用于编辑
+    var defaultArticle = "";
+    if (e.versions && e.versions.length) {
+      var dv = e.versions.find(function (v) { return v.isDefault; });
+      defaultArticle = dv ? dv.article : e.versions[0].article;
+    } else if (e.article) {
+      defaultArticle = e.article;
+    }
+
     var body = '<div class="f-grid">'
       + field("事件 ID", "id", e.id)
       + field("排序", "order", e.order)
@@ -708,7 +717,8 @@
       + field("标签（/分隔）", "tags", (e.tags || []).join(" / "))
       + '</div>'
       + field("摘要", "summary", e.summary, "textarea")
-      + '<div class="f-label">相关人员<div style="display:flex;flex-wrap:wrap;gap:6px 16px;padding:6px 0;">' + charBoxes + '</div></div>';
+      + '<div class="f-label">相关人员<div style="display:flex;flex-wrap:wrap;gap:6px 16px;padding:6px 0;">' + charBoxes + '</div></div>'
+      + field("正文（空行分段；支持 [[c:id|人名]] [[e:id|事件]] [[x:遮盖]] ）", "article", defaultArticle, "textarea");
 
     modal(isNew ? "新增事件" : "修订事件", body, function (form) {
       var fd = new FormData(form);
@@ -724,7 +734,19 @@
       target.summary = normalizeColons(String(fd.get("summary")));
       target.tags = String(fd.get("tags")).split(/[\/，,]/).map(function (s) { return s.trim(); }).filter(Boolean);
       target.chars = fd.getAll("chars").map(String);
-      if (!target.versions) target.versions = [{ title: target.title, article: "", isDefault: true }];
+
+      // 同步正文到版本系统
+      var articleText = normalizeColons(String(fd.get("article")));
+      if (!target.versions || !target.versions.length) {
+        target.versions = [{ title: target.title, article: articleText, isDefault: true }];
+      } else {
+        var dvIdx = target.versions.findIndex(function (v) { return v.isDefault; });
+        if (dvIdx < 0) dvIdx = 0;
+        target.versions[dvIdx].article = articleText;
+        target.versions[dvIdx].title = target.title;
+      }
+      target.article = articleText; // 兼容旧字段
+
       if (isNew) data.events.push(target);
     });
   }
